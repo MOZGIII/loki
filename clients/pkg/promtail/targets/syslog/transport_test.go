@@ -21,9 +21,11 @@ func TestIdleTimeoutConnPipe(t *testing.T) {
 	// When reading or writing, the deadline is extended
 	go func() {
 		buf := make([]byte, 0, 1024)
-		p.Read(buf)
+		_, err := p.Read(buf)
+		require.NoError(t, err)
 	}()
-	p.Write([]byte{})
+	_, err := p.Write([]byte{104, 101, 108, 108, 111, 32, 119, 111, 114, 108, 100})
+	require.NoError(t, err)
 	time.Sleep(50 * time.Millisecond)
 	require.False(t, p.IsIdle(time.Now()))
 	time.Sleep(80 * time.Millisecond)
